@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?><sqlb_project><db path="C:/Users/anjus/Downloads/northwind.db" readonly="0" foreign_keys="1" case_sensitive_like="0" temp_store="0" wal_autocheckpoint="1000" synchronous="2"/><attached/><window><main_tabs open="structure browser pragmas query" current="3"/></window><tab_structure><column_width id="0" width="300"/><column_width id="1" width="0"/><column_width id="2" width="100"/><column_width id="3" width="6214"/><column_width id="4" width="0"/><expanded_item id="0" parent="1"/><expanded_item id="1" parent="1"/><expanded_item id="2" parent="1"/><expanded_item id="3" parent="1"/></tab_structure><tab_browse><table title="Alphabetical list of products" custom_title="0" dock_id="1" table="4,29:mainAlphabetical list of products"/><dock_state state="000000ff00000000fd00000001000000020000000000000000fc0100000001fb000000160064006f0063006b00420072006f00770073006500310100000000ffffffff0000011800ffffff000000000000000000000004000000040000000800000008fc00000000"/><default_encoding codec=""/><browse_table_settings/></tab_browse><tab_sql><sql name="SQL 1*">-- Query 1: Top 5 Best-Selling Products by Revenue
+-- Business Context: Helps identify which products drive the most revenue. Useful for marketing focus and inventory prioritization.
+SELECT p.ProductName, SUM(od.UnitPrice * od.Quantity) AS Revenue
+FROM &quot;Order Details&quot; od
+JOIN Products p ON od.ProductID = p.ProductID
+GROUP BY p.ProductName
+ORDER BY Revenue DESC
+LIMIT 5;
+ 
+ </sql><sql name="SQL 2*">-- Query 2: Monthly Sales Trend
+-- Business Context: Analyzing monthly revenue trends helps identify seasonality, growth patterns, and forecasting needs.
+
+SELECT strftime('%Y-%m', o.OrderDate) AS Month,
+       SUM(&quot;Order Details&quot;.UnitPrice * &quot;Order Details&quot;.Quantity) AS MonthlyRevenue
+FROM Orders o
+JOIN &quot;Order Details&quot; ON o.OrderID = &quot;Order Details&quot;.OrderID
+GROUP BY Month
+ORDER BY Month;
+</sql><sql name="SQL 3*">--Query 3: Top Customers by Revenue
+--Business Context: Shows which customers are most valuable to the business.
+SELECT c.CompanyName, SUM(od.UnitPrice * od.Quantity) AS TotalSpent
+FROM Orders o
+JOIN Customers c ON o.CustomerID = c.CustomerID
+JOIN &quot;Order Details&quot; od ON o.OrderID = od.OrderID
+GROUP BY c.CompanyName
+ORDER BY TotalSpent DESC
+LIMIT 3;
+</sql><sql name="SQL 4*">--Average Order Value
+
+SELECT AVG(OrderTotal) AS AvgOrderValue
+FROM (
+  SELECT o.OrderID, SUM(od.UnitPrice * od.Quantity) AS OrderTotal
+  FROM Orders o
+  JOIN &quot;Order Details&quot; od ON o.OrderID = od.OrderID
+  GROUP BY o.OrderID
+);</sql><sql name="SQL 5*">--Orders Shipped by Each Shipper
+
+SELECT s.CompanyName, COUNT(*) AS TotalOrders
+FROM Orders o
+JOIN Shippers s ON o.ShipVia = s.ShipperID
+GROUP BY s.CompanyName;</sql><current_tab id="4"/></tab_sql></sqlb_project>
